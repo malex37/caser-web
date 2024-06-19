@@ -1,15 +1,9 @@
 import { RouteObject } from 'react-router-dom';
-// import Board from '../app/board/[boardid]/Board';
-// import TaskDetails from '../app-vite/views/TaskDetails';
-// import Settings from '../app/profile/settings/page';
-// import BoardConfiguration from '../app-vite/views/BoardConfiguration';
-// import Root from '../app/page';
-// import Dashboard from '../app/dashboard/page';
 
 export const RoutePaths = {
-  root: '/',
+  root: 'dashboard',
   board: {
-    path: ':boardId',
+    path: ':board',
     childPath: {
       boardId: ':boardId',
       config: 'config'

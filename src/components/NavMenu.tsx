@@ -1,6 +1,25 @@
-import { RouterConfig, Routes } from '@source/Router';
+'use client'
 import LinkButton from './molecules/LinkButton';
 import { v4 as uuid } from 'uuid';
+
+interface NavMenuRoute {
+  displayName: string;
+  path: string;
+  exposed: boolean;
+}
+
+const NavMenuRoutes: { [routeName: string]: NavMenuRoute } = {
+  home: {
+    displayName: 'Home',
+    path: 'dashboard',
+    exposed: true,
+  },
+  settings: {
+    displayName: 'Settings',
+    path: 'settings',
+    exposed: true,
+  }
+} as const
 
 interface NavMenuProps {
   className?: string;
@@ -17,18 +36,18 @@ function NavMenu(props: NavMenuProps) {
         <div className='navbar-end'>
           <ul className='menu menu-horizontal px-1'>
             {
-              Object.values(Routes).map((routeObj: Partial<RouterConfig>) => {
+              Object.values(NavMenuRoutes).map((routeObj: NavMenuRoute) => {
                 if (!routeObj.exposed) {
                   return;
                 }
                 return (
-                  <li key={`${routeObj.path}-${routeObj.friendlyName}`} >
+                  <li key={`${routeObj.path}-${routeObj.displayName}`} >
                     {
                       // YES I got tired and decided to just filter the root path...yeah I'm lazy so what
                     }
                     <LinkButton
-                      path={routeObj.path === '/' ? '/' : '/' + routeObj.path}
-                      text={routeObj.friendlyName || 'No provided text'}
+                      path={routeObj.path}
+                      text={routeObj.displayName || 'No provided text'}
                       key={uuid()} />
                   </li>
                 );

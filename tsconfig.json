@@ -22,9 +22,6 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
       "@models/*": [
         "./src/models/*"
       ],
@@ -45,6 +42,9 @@
       ],
       "@util/*": [
         "./src/util/*"
+      ],
+      "@middleware/*": [
+        "./src/middleware/*"
       ]
     }
   },

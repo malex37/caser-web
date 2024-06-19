@@ -1,3 +1,4 @@
+'use client'
 import { TaskData } from '@models/TaskData';
 import Tag from '@components/molecules/Tag';
 import { v4 as uuid } from 'uuid';
