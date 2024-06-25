@@ -8,7 +8,6 @@ const MiddlewareFunctions = [
 ];
 
 export function middleware(request: NextRequest) {
-  console.log(`[MainMiddleware] Executing through middleware with cookies ${JSON.stringify(request.cookies.getAll())}`);
   let response = NextResponse.next({
     request: {
       ...request,
@@ -17,7 +16,7 @@ export function middleware(request: NextRequest) {
   });
   // execution middlewares
   for (const middleFunction of MiddlewareFunctions) {
-    console.log('Executing middleware :');
+    console.log('[MainMiddleware] Executing middleware :');
     middleFunction.name();
     response = middleFunction.execute(request);
     if (response.ok) {
