@@ -39,3 +39,6 @@ certificates
 
 #mise
 .mise.toml
+
+# python
+*__pycache__

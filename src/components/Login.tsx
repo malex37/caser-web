@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { KeyIcon } from "@heroicons/react/24/solid";
-import { SessionControl } from "@middleware/session";
+import { SessionControl } from "@api/SessionControl";
 
 function LoginButton() {
   const { pending } = useFormStatus();
@@ -20,12 +20,14 @@ function LoginButton() {
 export default function Login() {
   const [result, dispatch] = useFormState(SessionControl, undefined);
   let [showPswd, setShowPswd] = useState(false);
+  // const router = useRouter();
   useEffect(() => {
+    console.log(`Result is: ${result}`);
     if (result && result !== 'DENIED') {
+      console.log(`Result is not denied, pushing router`);
       redirect('/dashboard');
     }
-  }, [result] || '')
-
+  }, [result] || '');
   return (
     <div className="w-5/12 flex justify-center flex-col border rounded border-moonstone shadow-xl" >
       <div className="flex justify-center p-3"><p className="text-xl">Login</p></div>

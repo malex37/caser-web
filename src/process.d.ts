@@ -7,5 +7,6 @@ declare namespace NodeJS {
     USER_POOL_ID: string;
     SERVICE_REGION: string;
     AWS_ACCOUNT_ID: string;
+    FOLDERS_TABLE: string;
   }
 }

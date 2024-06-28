@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AuthMiddleware } from "./middleware/auth";
+import { AuthMiddleware } from "./middleware/AuthMiddleware";
 
 // Middleware to execute in order
 // TODO: Maybe can leverage the middleware matcher
@@ -7,7 +7,8 @@ const MiddlewareFunctions = [
   new AuthMiddleware(),
 ];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  console.log(`[MainMiddleware] Executing through middleware with cookies ${JSON.stringify(request.cookies.getAll())}`);
   let response = NextResponse.next({
     request: {
       ...request,
@@ -18,12 +19,15 @@ export function middleware(request: NextRequest) {
   for (const middleFunction of MiddlewareFunctions) {
     console.log('[MainMiddleware] Executing middleware :');
     middleFunction.name();
-    response = middleFunction.execute(request);
-    if (response.ok) {
+    const midResponse = await middleFunction.execute(request);
+    if (midResponse.status === 'SUCCESS') {
       console.log('[MainMiddleware] Middleware response is ok, continuing');
       continue;
-    } else {
-      break;
+    } if (midResponse.status === 'FAIL') {
+      console.log(`[MainMiddleWare] Middleware response is ${JSON.stringify(midResponse)}`);
+      // destroy cookies
+      middleFunction.processFailure();
+      response = NextResponse.redirect(new URL('/login', request.url))
     }
   }
   return response;
@@ -31,6 +35,6 @@ export function middleware(request: NextRequest) {
 
 
 export const config = {
-  matcher: ['/((?!login|_next/).*)']
+  matcher: '/((?!login|_next/).*)'
 };
 
