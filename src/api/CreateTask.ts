@@ -5,8 +5,11 @@ import { CreateTaskResponse } from '@models/api/Responses';
 import { TaskData, TaskStatus } from '@models/TaskData';
 import { StorageStateFields } from '@models/app';
 import { BoardData } from '@models/BoardData';
-import { uuid as uuidType } from '@/models/Types';
-import { CreateTaskInput } from '@/models/api/inputs/CreateTaskInput';
+import { uuid as uuidType } from '@models/Types';
+import { CreateTaskInput } from '@models/api/inputs/CreateTaskInput';
+import { cookies } from 'next/headers';
+import { getIronSession } from 'iron-session';
+import { SessionToken } from '@models/api/auth/iron';
 
 
 /**
@@ -17,6 +20,20 @@ import { CreateTaskInput } from '@/models/api/inputs/CreateTaskInput';
  */
 export const CreateTask: ApiTypes['CreateTask'] =
   async (input: CreateTaskInput): Promise<CreateTaskResponse> => {
+    // get session
+    const sessionCookie = cookies().get(process.env.SESSION_COOKIE);
+    if (!sessionCookie) {
+      throw new Error('Invalid request, auth token ');
+    }
+    // get session
+    const session = await getIronSession<SessionToken>(cookies(), {
+      password: process.env.DEV_PSWD,
+      cookieName: process.env.SESSION_COOKIE,
+    })
+    if (!session) {
+      throw new Error('Invalid request, no session');
+    }
+    // if session is valid build ddb client
     console.log(`Executing ${APINames.CreateTask} with parameters (${JSON.stringify(input.task)},${input.autoAddBoardId})`);
     try {
       // Override client provided UUID in case uuid is compromised??

@@ -1,3 +1,4 @@
+'use client'
 import { TagData } from '@models/TagData';
 import DropDownSelection, { DropDownOption } from '../molecules/DropDownSelection';
 import InputField from '../molecules/InputField';

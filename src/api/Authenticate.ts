@@ -49,16 +49,6 @@ export async function Authenticate(_currentState: unknown, formData: FormData): 
     }
     // SUCCESS!
     console.info(`Success user ${providedUsername} successfully authenticated`);
-    const tokenCreatedTime = Date.now();
-    const cookieOpts = {
-      // httpOnly: true,
-      // secure: process.env.NODE_ENV === 'production',
-    }
-    // redirect to dashboard
-    cookies().set('accessToken', response.AuthenticationResult.AccessToken, cookieOpts);
-    cookies().set('idToken', response.AuthenticationResult.IdToken, cookieOpts);
-    cookies().set('tokenExpiration', `${response.AuthenticationResult.ExpiresIn}`, cookieOpts)
-    cookies().set('tokenStart', tokenCreatedTime.toString(), cookieOpts);
     return 'APPROVED';
   } catch (error) {
     return 'DENIED';

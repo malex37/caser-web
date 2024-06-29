@@ -28,7 +28,7 @@ interface NavMenuProps {
 function NavMenu(props: NavMenuProps) {
   return (
     <div className={props.className}>
-      <div className='navbar bg-base-100'>
+      <div className='navbar bg-amethyst-600'>
         <div className='navbar-start'>
         </div>
         <div className='navbar-center'>

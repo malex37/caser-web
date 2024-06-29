@@ -1,0 +1,18 @@
+@startuml
+participant client
+participant server
+participant S3
+participant IAM
+participant DDB
+
+client -> server: CreateFolder
+server -> DDB: Create folder entry with bucket URI as storage id
+DDB -> server: OK
+server -> IAM : Create access policy with user identityId
+IAM -> server: OK
+server -> S3: CreateBucket
+S3 -> server: OK
+server -> S3: Attach access policy to bucket
+S3 -> server: OK
+server -> client: Redirect to folder view
+@enduml
