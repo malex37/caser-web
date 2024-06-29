@@ -1,11 +1,12 @@
+'use server'
 import { DynamoDBClient, ScanCommand, ScanInput } from "@aws-sdk/client-dynamodb";
 import { SessionKeysOptions } from "@middleware/Config";
-import { Folder, FolderType } from "@models/DBSchemas/Folders";
+import {  Folder, FolderDbType, reshapeDbFolder } from "@models/DBSchemas/Folders";
 import { SessionServiceKeys } from "@models/api/auth/SessionToken";
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
 
-export default async function GetFolders() {
+export default async function GetFolders(): Promise<Folder[]> {
   const session = await getIronSession<SessionServiceKeys>(cookies(), SessionKeysOptions);
 
   if (!session) {
@@ -25,7 +26,10 @@ export default async function GetFolders() {
   };
   const inputCmd = new ScanCommand(input);
   const result = await dbClient.send(inputCmd);
-  return (result.Items as FolderType[])?.map((folder: FolderType) => {
-    return new Folder(folder);
+  if (!result.Items) {
+    return [] as Folder[];
+  }
+  return (result.Items as FolderDbType[])?.map((folder: FolderDbType) => {
+    return reshapeDbFolder(folder);
   } );
 }

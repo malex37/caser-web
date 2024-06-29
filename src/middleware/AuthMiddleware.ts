@@ -12,8 +12,8 @@ export class AuthMiddleware extends Middleware {
     // Get session for request
     const tokenSession = await getIronSession<SessionToken>(cookies(), SessionTokenOptions);
     const serviceSession = await getIronSession<SessionServiceKeys>(cookies(), SessionKeysOptions);
-    this.log(`TokenSession: ${JSON.stringify(tokenSession, null, 2)}`);
-    this.log(`ServiceSession: ${JSON.stringify(serviceSession, null, 2)}`);
+    // this.log(`TokenSession: ${JSON.stringify(tokenSession, null, 2)}`);
+    // this.log(`ServiceSession: ${JSON.stringify(serviceSession, null, 2)}`);
 
     if (!tokenSession || !serviceSession) {
       this.log('Insufficient tokens');
