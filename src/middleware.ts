@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AuthMiddleware } from "./middleware/AuthMiddleware";
+import { AuthMiddleware } from "@middleware/AuthMiddleware";
 
 // Middleware to execute in order
 // TODO: Maybe can leverage the middleware matcher
@@ -8,7 +8,6 @@ const MiddlewareFunctions = [
 ];
 
 export async function middleware(request: NextRequest) {
-  console.log(`[MainMiddleware] Executing through middleware with cookies ${JSON.stringify(request.cookies.getAll())}`);
   let response = NextResponse.next({
     request: {
       ...request,

@@ -1,7 +1,7 @@
 export interface ModalContainerProps {
   buttonText: string;
   modalId: string;
-  children: any;
+  children?: any;
   additionalClassNames?: string;
 }
 
@@ -18,10 +18,10 @@ const ModalContainer = (props: ModalContainerProps) => {
 
   return(
     <span>
-      <button className={`btn btn-sm ${props.additionalClassNames}`} onClick={()=> showModal(props.modalId)}>{props.buttonText}</button>
+      <button className={`${props.additionalClassNames ? props.additionalClassNames :'btn btn-sm ' }`} onClick={()=> showModal(props.modalId)}>{props.buttonText}</button>
       <dialog id={props.modalId} className='modal'>
         <div className='modal-box'>
-        {props.children}
+        {props.children ? props.children : null}
         <div>
             <button className='btn btn-sm' onClick={()=>closeModal(props.modalId)}>Close</button>
         </div>

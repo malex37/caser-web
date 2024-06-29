@@ -8,5 +8,7 @@ declare namespace NodeJS {
     SERVICE_REGION: string;
     AWS_ACCOUNT_ID: string;
     FOLDERS_TABLE: string;
+    BUCKET_ARN: string;
+    BUCKET_NAME: string;
   }
 }

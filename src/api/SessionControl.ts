@@ -16,7 +16,6 @@ import { createHmac } from 'crypto';
 import { IronSession, getIronSession } from 'iron-session';
 import { cookies } from 'next/headers';
 import { SessionKeysOptions, SessionTokenOptions } from '../middleware/Config';
-import { NextResponse } from 'next/server';
 
 const clientId = '6lt1t6rhh1v3e7gftbgpr30efp';
 const clientS = 'q53s2b3ct18gdug7vak0ll1tk1qcthlk6saos9ulo8jrnjoeosu';

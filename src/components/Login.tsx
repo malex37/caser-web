@@ -20,7 +20,6 @@ function LoginButton() {
 export default function Login() {
   const [result, dispatch] = useFormState(SessionControl, undefined);
   let [showPswd, setShowPswd] = useState(false);
-  // const router = useRouter();
   useEffect(() => {
     console.log(`Result is: ${result}`);
     if (result && result !== 'DENIED') {
