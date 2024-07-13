@@ -28,6 +28,7 @@ export default async function CreateFolder(_currentState: unknown, formData: For
     sessionToken: session.ST,
     accountId: process.env.AWS_ACCOUNT_ID,
   }
+  const newFolderId = uuid();
   // Create a folder in bucket
   const s3Client = new S3Client({
     region: 'us-east-1',
@@ -36,7 +37,7 @@ export default async function CreateFolder(_currentState: unknown, formData: For
   // create folder command
   const putObjectInput: PutObjectCommandInput = {
     Bucket:process.env.BUCKET_NAME,
-    Key: `${folderProps.name}/`,
+    Key: `${newFolderId}/`,
     ContentLength: 0,
   }
   console.log(`Invoking S3 to put object with input ${JSON.stringify(putObjectInput)}`);
@@ -48,7 +49,6 @@ export default async function CreateFolder(_currentState: unknown, formData: For
     region: process.env.SERVICE_REGION,
     credentials: creds,
   });
-  const newFolderId = uuid();
   const putItemInput: PutItemInput = {
     TableName: process.env.FOLDERS_TABLE,
     Item: {
