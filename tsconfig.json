@@ -54,7 +54,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "tools/updateMimeTypes.cpp"  ],
   "exclude": [
     "node_modules"
   ]

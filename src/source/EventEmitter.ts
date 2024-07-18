@@ -9,7 +9,6 @@ type EventMap = Partial<{
     subscribers: {
       [subscriberId: string]: {
         callback: (e: any) => any,
-        element: HTMLElement
       }
     }
   }
@@ -20,7 +19,7 @@ export class EventEmitter {
   constructor() {
 
   };
-  subscribe(event: EventKeys, subscriberId: string, subscribingElement: HTMLElement, callback: (e: any) => any) {
+  subscribe(event: EventKeys, subscriberId: string,  callback: (e: any) => any) {
     if (!window) {
       throw new Error('Window is undefined');
     }
@@ -32,7 +31,6 @@ export class EventEmitter {
     } else {
       check.subscribers[subscriberId] = {
         callback: callback,
-        element: subscribingElement,
       }
     }
   }
@@ -40,7 +38,7 @@ export class EventEmitter {
     console.log(`Emitting ${event}`);
     Object.keys(EventEmitter.connections[event]?.subscribers || []).map(key => {
       console.log(`Emitting ${event} on ${key}`)
-      EventEmitter.connections[event]?.subscribers[key].element.dispatchEvent(new CustomEvent<typeof data>(event, data));
+      EventEmitter.connections[event]?.subscribers[key].callback(new CustomEvent<typeof data>(event, data));
     });
   }
 }

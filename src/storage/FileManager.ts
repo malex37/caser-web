@@ -39,13 +39,14 @@ export class FileManager {
       const fsRoot = await navigator.storage.getDirectory();
       console.log(`[FileManager] Getting file handle for ${cleanName}`);
       const fileHandler = await fsRoot.getFileHandle(cleanName);
-      console.log(`[FileManager] Getting file for`);
+      console.log(`[FileManager] Getting file`);
       const file = await fileHandler.getFile();
-      console.log(`[FileManager] Returrning file`);
+      console.log(`[FileManager] Got file ${file.name} and type ${file.type}`);
+      console.log(`[FileManager] Returning file`);
       return file;
     } catch (error) {
-
+      console.error('Failed to retrieve file from storage');
+      return undefined;
     }
-    return undefined;
   }
 }

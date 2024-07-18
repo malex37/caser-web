@@ -5,12 +5,16 @@ import { SessionKeysOptions } from "@middleware/Config";
 import { SessionServiceKeys } from "@models/api/auth/SessionToken";
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
+import { ReshapedFolder } from "./GetFolderContents";
+import { v4 as uuid } from 'uuid';
 
 export default async function UploadFile(
   folderId: string,
   fileName: string,
-  file: Uint8Array,
-): Promise<boolean> {
+  fileData: string,
+  fileType: string,
+  lastModified: number,
+): Promise<Omit<ReshapedFolder, 'lastModified'> & {lastModified: number} | undefined> {
   const session = await getIronSession<SessionServiceKeys>(cookies(), SessionKeysOptions);
   if (!session) {
     throw new Error('Access denied');
@@ -28,12 +32,21 @@ export default async function UploadFile(
   const putCommandInput: PutObjectCommandInput = {
     Bucket: process.env.BUCKET_NAME,
     Key: folderId+`/${fileName}`,
-    Body: file,
-    ContentLength: file.length
+    Body: Buffer.from(fileData),
+    ContentLength: fileData.length,
+    ContentType: fileType,
   };
-
+  console.log(`[UploadFile] Uploading file named ${fileName} of type ${fileType} to folder ${folderId}`);
   const putCommand = new PutObjectCommand(putCommandInput);
   const response = await s3Client.send(putCommand);
   console.log(`[${UploadFile.name}] upload completed with result ${JSON.stringify(response)}`);
-  return true;
+  const resultFile = {
+    name: fileName,
+    size: fileData.length,
+    lastModified: lastModified,
+    bucketKey: folderId,
+    uuid: uuid(),
+    type: fileType,
+  }
+  return resultFile;
 }

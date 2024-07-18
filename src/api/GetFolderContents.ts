@@ -34,7 +34,9 @@ function reshapeBucketFolder(bucketDescription: ListObjectsV2CommandOutput, pref
     } as ReshapedFolder;
   });
   // remove undefined
-  return (reshaped || []).filter(el => el !== undefined) as ReshapedFolder[];
+  const filteredReshaped = (reshaped || []).filter(el => el !== undefined) as ReshapedFolder[];
+  console.log(`Reshaped folder is: ${JSON.stringify(filteredReshaped, null, 2)}`);
+  return filteredReshaped;
 }
 
 export default async function GetFolderContents(folderId: string): Promise<ReshapedFolder[]> {
@@ -58,6 +60,6 @@ export default async function GetFolderContents(folderId: string): Promise<Resha
     Delimiter: '/'
   }
   const command = new ListObjectsV2Command(commandInput);
-  const bucketContents = await s3Client.send(command);
+  const bucketContents: ListObjectsV2CommandOutput = await s3Client.send(command);
   return reshapeBucketFolder(bucketContents, folderId + '/');
 }

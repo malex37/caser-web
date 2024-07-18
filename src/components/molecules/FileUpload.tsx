@@ -1,7 +1,9 @@
 'use client'
+import { ReshapedFolder } from "@api/GetFolderContents";
 import UploadFile from "@api/UploadFile";
 import { ShowToast } from "@components/ToastMessage";
 import { DocumentArrowUpIcon } from "@heroicons/react/24/outline";
+import { GlobalEmitter } from "@source/EventEmitter";
 
 export default function FileUpload({destinationFolder}: { destinationFolder: string }) {
 
@@ -25,12 +27,18 @@ export default function FileUpload({destinationFolder}: { destinationFolder: str
     }
     const file = inputElem.files[0];
     console.log(`File uploaded: ${inputElem.files ? inputElem.files[0].name : 'none'}`);
-    console.log(`Uploaded file of type ${file.type}`);
-    const fileData = await file.arrayBuffer();
-    await UploadFile(destinationFolder, file.name, new Uint8Array(fileData));
+    const fileData = Buffer.from(await file.arrayBuffer()).toString();
+    let uploadStatus = await UploadFile(destinationFolder, file.name, fileData, file.type, file.lastModified);
+    if (!uploadStatus) {
+      fetchInputElement().files = null;
+      ShowToast({ type: 'error', message: 'File upload failed :('});
+      return;
+    }
+    (uploadStatus.lastModified as unknown as Date)= new Date(uploadStatus.lastModified)
     // clear element files to avoid rendering to fetch an unknown virtual path
     fetchInputElement().files = null;
     ShowToast({type: 'success', message: 'File uploaded'})
+    GlobalEmitter.emit('FileUploaded', {detail: uploadStatus });
   }
   return (
     <div className="flex flex-row items-center gap-3">

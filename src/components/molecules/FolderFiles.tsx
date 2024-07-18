@@ -3,11 +3,11 @@ import { v4 as uuid } from 'uuid';
 import { ReshapedFolder } from '@api/GetFolderContents';
 import { Dispatch, MutableRefObject, SetStateAction, useEffect, useRef, useState } from 'react';
 import GetFolderFile from '@api/GetFolderFile';
-import { FilesDB } from '../../clients/IndexedDB';
 import { FolderFile } from '@models/api/FolderFile';
 import FilePreview from '@components/FilePreview';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { FileManager } from '@storage/FileManager';
+import { GlobalEmitter } from '@source/EventEmitter';
 
 type ReferenceObj = {
   name: string;
@@ -24,6 +24,12 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
   const [checkboRefs, setCheckboRefs] = useState({} as ReferenceMap);
   const [previewFileKey, setPreviewFileKey] = useState('');
   const checkEventName = 'set-check';
+  const [folderFiles, setFolderFiles] = useState<ReshapedFolder[]>(bucketContents);
+
+  const updateFileList = async (event: CustomEvent<ReshapedFolder>) => {
+    console.log(`Received event with data ${JSON.stringify(event.detail)}`)
+    setFolderFiles([...folderFiles, event.detail]);
+  };
   useEffect(() => {
     //set events once component is rendered
     Object.values(checkboRefs).map((reference: ReferenceObj) => {
@@ -36,8 +42,9 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
         console.log(`Event ${checkEventName} received, changing ${reference.name} checkbox state from ${reference.state} to ${data.detail.isChecked}`);
         reference.setState(data.detail.isChecked);
         console.log(`handled reference with name ${reference.name} and state ${reference.state}`);
-        setCheckboRefs({ ...checkboRefs })
+        setCheckboRefs({ ...checkboRefs });
       });
+      GlobalEmitter.subscribe('FileUploaded', 'updateFileViewFileList', updateFileList);
     });
     // set a key in context for the folder
   }, []);
@@ -57,28 +64,27 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
       setAllChecked(value);
     });
   }
-  const getObject = async (objectKey: string, id: string) => {
+  const getObject = async (objectKey: string, id: string, name: string) => {
     if (previewFileKey === objectKey) {
       console.log('File already rendered, ignoring request');
       return;
     }
-    // check if file exists
-    let dbFile = await FilesDB.files.get(objectKey)
-    // if (dbFile && dbFile.data) {
-    //   // if file exists and was already rendered
-    //   console.log(`File is already in DB, using cached object`);
-    //   setPreviewFileKey(dbFile.key);
-    //   return;
-    // }
+    // check if file is in cache
+    const cacheFile = await FileManager.getFile(name);
+    if (cacheFile) {
+      console.log('[FolderFiles] Found file in cache');
+      setPreviewFileKey(cacheFile.name);
+      return;
+    }
     const file: FolderFile = await GetFolderFile(objectKey, id);
     if (!file || !file.data) {
       throw new Error('Invalid file');
     }
-    await FilesDB.files.put(file, file.key);
     await FileManager.writeFile(file.name, Uint8Array.from(atob(file.data), c => c.charCodeAt(0)));
     console.log(`Setting state file key to ${file.name}`);
     setPreviewFileKey(file.name);
   };
+
   const buildFileFromReshape = (file: ReshapedFolder) => {
     const fileType = file.name.substring(file.name.lastIndexOf('.'));
     const checkboxName = file.name.replaceAll('.', '-');
@@ -108,8 +114,8 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
           {file.name}
         </td>
         <td>{fileType}</td>
-        <td>{file.lastModified.toString()}</td>
-        <td onClick={() => getObject(file.bucketKey, file.uuid)} ><MagnifyingGlassIcon className='h-full' /></td>
+        <td>{file.lastModified.toDateString()}</td>
+        <td onClick={() => getObject(file.bucketKey, file.uuid, file.name)} ><MagnifyingGlassIcon className='h-10 w-10' /></td>
       </tr>
     );
     return el;
@@ -117,7 +123,7 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
   return (
     <div className="overflow-auto flex flex-row flex-nowrap">
       <div className='w-full'>
-        <table className="table w-full">
+        <table className="table">
           <thead>
             <tr>
               <th>
@@ -137,7 +143,7 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
           </thead>
           <tbody id="files-table-body">
             {
-              bucketContents.length !== 0 ? bucketContents.map((file: ReshapedFolder) => {
+              folderFiles.length !== 0 ? bucketContents.map((file: ReshapedFolder) => {
                 return buildFileFromReshape(file)
               }) : null
             }
@@ -145,11 +151,9 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
         </table>
       </div>
       <div className='divider-vertical'></div>
-      <div>
         {
           previewFileKey !== '' ? <FilePreview fileKey={previewFileKey} /> : null
         }
-      </div>
     </div>
   );
 }
