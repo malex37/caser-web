@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { KeyIcon } from "@heroicons/react/24/solid";
+import { UserIcon } from "@heroicons/react/24/solid";
 import { SessionControl } from "@api/SessionControl";
 
 function LoginButton() {
@@ -32,10 +33,11 @@ export default function Login() {
       <div className="flex justify-center p-3"><p className="text-xl">Login</p></div>
       <form action={dispatch} className="w-full flex flex-col gap-3 items-center p-3">
         <label className="input input-bordered flex items-center gap-3 w-3/4 mb-2">
+          <UserIcon className="h-2/3 w-auto" />
           <input type="text" className="w-full" name="username" required />
         </label>
         <label className="input input-bordered flex items-center gap-3 w-3/4 mb-1">
-          <KeyIcon className="h-6" />
+          <KeyIcon className="h-2/3 w-auto" />
           <input className="w-full" type={showPswd ? 'text' : 'password'} name="password" required />
         </label>
         <p onClick={() => setShowPswd(!showPswd)}>Show password</p>

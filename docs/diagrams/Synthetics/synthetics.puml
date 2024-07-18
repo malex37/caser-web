@@ -1,0 +1,20 @@
+@startuml
+start
+:Login;
+:Authenticate
+<<Server action>>;
+if (Network) then (True)
+    :Network request to cognito for webidentity;
+    :Network request to IAM for STS token;
+    :Return credentials;
+else (No network)
+  if (proces.env.NODE_ENV == 'development') then (True)
+    :Return synthetic webidentity token;
+    :Return synthetic STS token;
+  else (False)
+    :Throw login error;
+  endif
+endif
+:End login flow;
+end
+@enduml

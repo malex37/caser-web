@@ -3,7 +3,8 @@
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
+      "dom.asynciterable"
     ],
     "allowJs": true,
     "skipLibCheck": true,
@@ -53,7 +54,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "tools/updateMimeTypes.cpp"  ],
   "exclude": [
     "node_modules"
   ]

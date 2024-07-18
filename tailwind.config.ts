@@ -12,6 +12,20 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      animation: {
+        fadeInto: 'fadeIn .5s ease-in-out',
+        fadeOuto: 'fadeOut .5s ease-in-out',
+      },
+      keyframes: {
+        fadeIn: {
+          from: { opacity: '0' },
+          to: { opacity: '1' }
+        },
+        fadeOut: {
+          from: { opacity: '1' },
+          to: { opacity: '0' }
+        }
+      }
     },
     colors: {
       primary: '#8d60d5',
@@ -76,6 +90,32 @@ const config: Config = {
         900: '#e3ecee'
       }
     },
+  },
+  daisyui: {
+    themes: [{
+      default: {
+        "primary": "8d60d5",
+        "primary-content": "#001008",
+        "secondary": "#f6a3ad",
+        "secondary-content": "#001008",
+        "accent": "#f79e39",
+        "accent-content": "#001008",
+        "neutral": "#709ea8",
+        "neutral-content": "#ffffff",
+        "base-100": "#ffffff",
+        "base-200": "#ddd9de",
+        "base-300": "#d1d5db",
+        "base-content": "#161516",
+        "info": "#38bdf8",
+        "info-content": "#000615",
+        "success": "#a3e635",
+        "success-content": "#060d00",
+        "warning": "#fde047",
+        "warning-content": "#0e0400",
+        "error": "#ff838d",
+        "error-content": "#160607",
+      }
+    }]
   },
   plugins: [require("daisyui")],
 };
