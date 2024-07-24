@@ -2,6 +2,7 @@
 import TabContainer from './debug/tabs/TabContainer';
 import FSInfo from './debug/tabs/FSInfo';
 import { useEffect } from 'react';
+import ToastMessage from './debug/tabs/ToastMessage';
 
 export interface DebugProps {
   id: string,
@@ -31,7 +32,8 @@ const Debug = (props: DebugProps): JSX.Element => {
     <dialog id={props.id} className='modal w-full h-full'>
       <div className='modal-box max-w-[90%] gap-2 h-full w-full'>
         <TabContainer>
-         <FSInfo />
+          <FSInfo />
+          <ToastMessage />
         </TabContainer>
       </div>
     </dialog>

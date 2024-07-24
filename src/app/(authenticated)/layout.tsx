@@ -3,7 +3,7 @@ import "@assets/index.css";
 import NavMenu from "@components/NavMenu";
 import { cookies } from "next/headers";
 import { GeistSans } from "geist/font/sans";
-import ToastMessage from "@components/ToastMessage";
+import ToastMessageHandler from "@components/molecules/ToastMessageHandler";
 import Debug from "@components/modals/Debug";
 
 export const metadata: Metadata = {
@@ -16,12 +16,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={GeistSans.variable}>
       <body className="flex flex-col w-full h-full">
+        <ToastMessageHandler />
         {
           process.env.NODE_ENV === 'development' ? <Debug id={debugId}/> : <></>
         }
         {/* <Debug id={debugId} /> */}
         {!isLogin ? <NavMenu /> : <></>}
-        <ToastMessage />
         {children}
       </body>
     </html>
