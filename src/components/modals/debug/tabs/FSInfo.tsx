@@ -30,7 +30,7 @@ export default function FSInfo() {
         <div className="hover:cursor-pointer" onClick={getFsFiles}>
           <ArrowPathIcon className="w-24"/>
         </div>
-        {JSON.stringify(fsFiles)}
+        {JSON.stringify(fsFiles, null, 2)}
       </div>
     </Tab>
   );

@@ -8,7 +8,7 @@ import { Folder } from '@models/DBSchemas/Folders';
 import { useEffect, useState } from 'react';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
-import { ShowToast } from '@components/ToastMessage';
+import { ShowToast } from '@components/molecules/ToastMessageHandler';
 
 export default function Dashboard(): JSX.Element {
 
