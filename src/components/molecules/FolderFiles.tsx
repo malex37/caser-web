@@ -25,6 +25,7 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
   const [previewFileKey, setPreviewFileKey] = useState('');
   const checkEventName = 'set-check';
   const [folderFiles, setFolderFiles] = useState<ReshapedFolder[]>(bucketContents);
+  const [previewStatus, setPreviewStatus] = useState<'visible'|'invisible'>('invisible');
 
   const updateFileList = async (event: CustomEvent<ReshapedFolder>) => {
     console.log(`Received event with data ${JSON.stringify(event.detail)}`)
@@ -64,7 +65,11 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
       setAllChecked(value);
     });
   }
+  const previewVisibility = (newVis: typeof previewStatus) => {
+    setPreviewStatus(newVis);
+  }
   const getObject = async (objectKey: string, id: string, name: string) => {
+    setPreviewFileKey('');
     if (previewFileKey === objectKey) {
       console.log('File already rendered, ignoring request');
       return;
@@ -73,7 +78,10 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
     const cacheFile = await FileManager.getFile(name);
     if (cacheFile) {
       console.log('[FolderFiles] Found file in cache');
-      setPreviewFileKey(cacheFile.name);
+      if (previewStatus === 'invisible') {
+        setPreviewStatus('visible');
+      }
+      setPreviewFileKey(name);
       return;
     }
     const file: FolderFile = await GetFolderFile(objectKey, id);
@@ -83,6 +91,7 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
     await FileManager.writeFile(file.name, Uint8Array.from(atob(file.data), c => c.charCodeAt(0)));
     console.log(`Setting state file key to ${file.name}`);
     setPreviewFileKey(file.name);
+    setPreviewStatus('visible')
   };
 
   const buildFileFromReshape = (file: ReshapedFolder) => {
@@ -152,7 +161,7 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
       </div>
       <div className='divider-vertical'></div>
         {
-          previewFileKey !== '' ? <FilePreview fileKey={previewFileKey} /> : null
+          <FilePreview currentFolder={folderId} fileKey={previewFileKey} visibility={previewStatus} visControl={previewVisibility}/>
         }
     </div>
   );

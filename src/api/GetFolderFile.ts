@@ -29,7 +29,7 @@ export default async function GetFolderFile(fileKey: string, id: string): Promis
     }
     const bodyBuffer = await fileOutput.Body.transformToString('base64');
     result.data = bodyBuffer;
-    
+
     // console.log(`Retrieved fileBuffer ${JSON.stringify(bodyBuffer)}`);
     return result;
   } catch (error) {

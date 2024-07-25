@@ -1,0 +1,32 @@
+@startuml
+participant User as user
+participant "File list" as list
+participant FilePreview as preview
+participant PreviewComponent as pComponent
+participant Server as server
+participant "Browser storage" as storage
+participant "File helper" as fileHelper
+
+user -> list: Select file
+list -> preview: Set key
+preview -> storage: Retrieve file
+alt If file present
+  storage -> preview: Return file
+else If file not present download
+  preview -> server: Get file with key
+  server -> preview: Return file
+  preview -> storage: Save file for cache
+else If file can't be retrieved
+  preview -> preview: Post error toast
+end
+preview -> pComponent: Provide file data
+pComponent -> pComponent: Render data
+user -> pComponent: Edit
+user -> pComponent: Save
+pComponent -> fileHelper: Provide data & name
+fileHelper -> fileHelper: Create file
+fileHelper -> server: Use upload through server action
+server -> fileHelper: Return success
+fileHelper -> pComponent: Return success
+pComponent -> user: Post success toast
+@enduml
