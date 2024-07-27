@@ -1,47 +1,108 @@
 'use client'
 
-import React, { useEffect, useState } from "react";
-import { MDXEditor, MDXEditorMethods, headingsPlugin, linkPlugin } from "@mdxeditor/editor";
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import {
+  MDXEditor,
+  MDXEditorMethods,
+  headingsPlugin,
+  linkPlugin,
+  toolbarPlugin,
+  tablePlugin,
+  linkDialogPlugin,
+  codeBlockPlugin,
+  codeMirrorPlugin,
+  listsPlugin,
+  UndoRedo,
+  BoldItalicUnderlineToggles,
+  InsertTable,
+  CreateLink,
+  BlockTypeSelect,
+} from "@mdxeditor/editor";
+import '@mdxeditor/editor/style.css';
 import { PreviewFile } from "@models/app";
 
 export interface MardownFileProps {
   file: PreviewFile
   editorReference?: React.MutableRefObject<MDXEditorMethods | null>;
+  editLocked: boolean;
+  children?: React.ReactNode;
+  ref: any;
 }
-
-export default function MarkdownFile({ file, editorReference }: MardownFileProps) {
+const ToolBar = () => (
+  <>
+    {' '}
+    <UndoRedo />
+    <BoldItalicUnderlineToggles />
+    <BlockTypeSelect />
+    <CreateLink />
+    <InsertTable />
+  </>
+);
+const MarkdownFile = forwardRef(function MarkdownFile({ file, editLocked, children }: MardownFileProps, ref) {
   const [text, setText] = useState<string>('');
-  const [locked, setLocked] = useState<boolean>(true);
-  async function LoadMarkdownText(file: PreviewFile) {
-    const markdownBuffer = await file.data.arrayBuffer();
+  const [edited, setEdited] = useState<boolean>(false);
+  const localEditorReference = useRef<MDXEditorMethods>(null);
+  async function LoadMarkdownText(file: File) {
+    const markdownBuffer = await file.arrayBuffer();
     const markdownText = Buffer.from(markdownBuffer).toString();
-    setText(markdownText)
+    console.log(`[MardownFile] Text to render is ${markdownText}`);
+    setText(markdownText);
+    SetMarkdownByRef(markdownText);
   }
+  const SetMarkdownByRef = (text = '') => {
+    localEditorReference.current?.setMarkdown(text);
+  };
   useEffect(() => {
-    LoadMarkdownText(file);
-  }, []);
-  const toggleEdit = (e: any) => {
-    e.preventDefault();
-    console.log(`Enabling edit for editor. Previous value ${locked}`);
-    setLocked(!locked);
+    console.log(`[Markdown preview] Loading file with name ${file.name}`);
+    LoadMarkdownText(file.data);
+  }, [file]);
+  useImperativeHandle(ref, () => {
+    return {
+      editedText() {
+        return text;
+      },
+      wasEdited() {
+        return edited;
+      },
+      info() {
+        return {
+          type: file.type,
+          name: file.name,
+        };
+      },
+    }
+  });
+
+  const setEditorText = (e: string) => {
+    setText(e);
+    setEdited(true);
   }
+
   return (
     <div className={`p-3 w-full flex flex-col gap-2`}>
-      <div className="items-center w-full">
-        <button className="btn btn-accent w-1/5" onClick={(e) => toggleEdit(e)}>{locked ? 'Edit' : 'Done'}</button>
-      </div>
-      <div className={`${locked ? '' : 'border'}`}>
-        {
-          text !== '' ?
-            <MDXEditor
-              onChange={(e) => console.log(e)}
-              ref={editorReference}
-              markdown={text}
-              plugins={[headingsPlugin(), linkPlugin()]}
-              readOnly={locked}
-            /> : null
-        }
+      {children ? children : null}
+      <div className={`${editLocked ? '' : 'border'} p-3`}>
+        <MDXEditor
+          contentEditableClassName="prose"
+          onChange={(e) => setEditorText(e)}
+          ref={localEditorReference}
+          markdown={text}
+          plugins={[
+            headingsPlugin(),
+            linkPlugin(),
+            tablePlugin(),
+            linkDialogPlugin(),
+            listsPlugin(),
+            codeBlockPlugin(),
+            codeMirrorPlugin({ codeBlockLanguages: { bash: 'bash' } }),
+            toolbarPlugin({
+              toolbarContents: () => ToolBar(),
+            }),
+          ]}
+          readOnly={editLocked}
+        />
       </div>
     </div>
   );
-}
+});
+export default MarkdownFile;

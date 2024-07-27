@@ -1,9 +1,7 @@
 'use client'
-import { ReshapedFolder } from "@api/GetFolderContents";
 import UploadFile from "@api/UploadFile";
-import { ShowToast } from "@components/ToastMessage";
+import { ShowToast } from "@components/molecules/ToastMessageHandler";
 import { DocumentArrowUpIcon } from "@heroicons/react/24/outline";
-import { GlobalEmitter } from "@source/EventEmitter";
 
 export default function FileUpload({destinationFolder}: { destinationFolder: string }) {
 
@@ -38,7 +36,6 @@ export default function FileUpload({destinationFolder}: { destinationFolder: str
     // clear element files to avoid rendering to fetch an unknown virtual path
     fetchInputElement().files = null;
     ShowToast({type: 'success', message: 'File uploaded'})
-    GlobalEmitter.emit('FileUploaded', {detail: uploadStatus });
   }
   return (
     <div className="flex flex-row items-center gap-3">

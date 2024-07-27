@@ -22,7 +22,9 @@ export default function PdfCanvas({ file }: { file: PreviewFile }) {
   const onLoadSuccess = ({ numPages: nextNumPages }: PDFDocumentProxy) => {
     setPageNumber(nextNumPages);
   }
-  const changePage = (direction: 'left' | 'right') => {
+  // Can't be bothered with typing the button
+  const changePage = (e: any, direction: 'left' | 'right') => {
+    e.preventDefault();
     const destinationPage = currentPage + (direction === 'left' ? -1 : 1);
     if (destinationPage < 0 || destinationPage >= pageNumber) {
       return;
@@ -36,9 +38,9 @@ export default function PdfCanvas({ file }: { file: PreviewFile }) {
       </Document>
       <div className="flex items-center justify-center">
         <div className="join">
-          <button className="join-item btn" onClick={() => changePage('left')}><ChevronLeftIcon className="h-10" /></button>
+          <button className="join-item btn" onClick={(e) => changePage(e, 'left')}><ChevronLeftIcon className="h-10" /></button>
           <button className="join-item btn">{currentPage + 1}</button>
-          <button className="join-item btn" onClick={() => changePage('right')}><ChevronRightIcon className="h-10" /></button>
+          <button className="join-item btn" onClick={(e) => changePage(e, 'right')}><ChevronRightIcon className="h-10" /></button>
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import UploadFile from "@api/UploadFile";
 export class FileManager {
   constructor() { }
 
@@ -31,7 +32,6 @@ export class FileManager {
     }
     return 'OK';
   }
-
   static async getFile(name: string): Promise<File | undefined> {
     const cleanName = FileManager.sanitizeName(name);
     try {
@@ -47,6 +47,23 @@ export class FileManager {
     } catch (error) {
       console.error('Failed to retrieve file from storage');
       return undefined;
+    }
+  }
+  static async uploadFile(destinationFolder: string, name: string, file: File): Promise<'SUCCESS'> {
+    try {
+      const fileBuffer = Buffer.from(await file.arrayBuffer()).toString();
+      const uploadStatus = await UploadFile(destinationFolder, name, fileBuffer, file.type, file.lastModified);
+      if (!uploadStatus) {
+        console.error(`[FileManager] File upload failed, api response was not present`);
+        throw new Error('Error uploading file');
+      }
+      console.log(`[FileManager] Completed upload with result ${JSON.stringify(uploadStatus)}`);
+      // After uploading is successful write to pre-cache file
+      FileManager.writeFile(name, await file.arrayBuffer());
+      return 'SUCCESS';
+    } catch (error) {
+      console.error(`[FileManager] File upload failed with error ${JSON.stringify((error as unknown as any), null, 2)}`);
+      throw error;
     }
   }
 }
