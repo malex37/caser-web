@@ -1,6 +1,6 @@
 'use client'
 
-import React, { ChangeEvent, forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import {
   MDXEditor,
   MDXEditorMethods,
@@ -38,17 +38,24 @@ const ToolBar = () => (
     <InsertTable />
   </>
 );
-const MarkdownFile = forwardRef(function MarkdownFile({ file, editorReference, editLocked, children }: MardownFileProps, ref) {
+const MarkdownFile = forwardRef(function MarkdownFile({ file, editLocked, children }: MardownFileProps, ref) {
   const [text, setText] = useState<string>('');
   const [edited, setEdited] = useState<boolean>(false);
-  async function LoadMarkdownText(file: PreviewFile) {
-    const markdownBuffer = await file.data.arrayBuffer();
+  const localEditorReference = useRef<MDXEditorMethods>(null);
+  async function LoadMarkdownText(file: File) {
+    const markdownBuffer = await file.arrayBuffer();
     const markdownText = Buffer.from(markdownBuffer).toString();
-    setText(markdownText)
+    console.log(`[MardownFile] Text to render is ${markdownText}`);
+    setText(markdownText);
+    SetMarkdownByRef(markdownText);
   }
+  const SetMarkdownByRef = (text = '') => {
+    localEditorReference.current?.setMarkdown(text);
+  };
   useEffect(() => {
-    LoadMarkdownText(file);
-  }, []);
+    console.log(`[Markdown preview] Loading file with name ${file.name}`);
+    LoadMarkdownText(file.data);
+  }, [file]);
   useImperativeHandle(ref, () => {
     return {
       editedText() {
@@ -62,7 +69,7 @@ const MarkdownFile = forwardRef(function MarkdownFile({ file, editorReference, e
           type: file.type,
           name: file.name,
         };
-      }
+      },
     }
   });
 
@@ -75,28 +82,25 @@ const MarkdownFile = forwardRef(function MarkdownFile({ file, editorReference, e
     <div className={`p-3 w-full flex flex-col gap-2`}>
       {children ? children : null}
       <div className={`${editLocked ? '' : 'border'} p-3`}>
-        {
-          text !== '' ?
-            <MDXEditor
-              contentEditableClassName="prose"
-              onChange={(e) => setEditorText(e)}
-              ref={editorReference}
-              markdown={text}
-              plugins={[
-                headingsPlugin(),
-                linkPlugin(),
-                tablePlugin(),
-                linkDialogPlugin(),
-                listsPlugin(),
-                codeBlockPlugin(),
-                codeMirrorPlugin({ codeBlockLanguages: { bash: 'bash' } }),
-                toolbarPlugin({
-                  toolbarContents: () => ToolBar(),
-                }),
-              ]}
-              readOnly={editLocked}
-            /> : null
-        }
+        <MDXEditor
+          contentEditableClassName="prose"
+          onChange={(e) => setEditorText(e)}
+          ref={localEditorReference}
+          markdown={text}
+          plugins={[
+            headingsPlugin(),
+            linkPlugin(),
+            tablePlugin(),
+            linkDialogPlugin(),
+            listsPlugin(),
+            codeBlockPlugin(),
+            codeMirrorPlugin({ codeBlockLanguages: { bash: 'bash' } }),
+            toolbarPlugin({
+              toolbarContents: () => ToolBar(),
+            }),
+          ]}
+          readOnly={editLocked}
+        />
       </div>
     </div>
   );

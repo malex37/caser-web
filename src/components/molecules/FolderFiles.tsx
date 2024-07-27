@@ -26,6 +26,7 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
   const checkEventName = 'set-check';
   const [folderFiles, setFolderFiles] = useState<ReshapedFolder[]>(bucketContents);
   const [previewStatus, setPreviewStatus] = useState<'visible'|'invisible'>('invisible');
+  const [allChecked, setAllChecked] = useState(false);
 
   const updateFileList = async (event: CustomEvent<ReshapedFolder>) => {
     console.log(`Received event with data ${JSON.stringify(event.detail)}`)
@@ -50,7 +51,6 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
     // set a key in context for the folder
   }, []);
 
-  const [allChecked, setAllChecked] = useState(false);
   const toggleAllCheckboxes = (value: boolean) => {
     console.log(`Toggling all boxes to ${value}`)
     console.log(`Checking all boxes`);

@@ -54,6 +54,7 @@ export default function FilePreview(
   { fileKey, visibility, visControl, currentFolder }:
     { fileKey: string, visibility: 'visible' | 'invisible', visControl: Function, currentFolder: string }
 ): JSX.Element {
+  const [previewFileKey, setPreviewFileKey] = useState(fileKey);
   const [fileData, setFileData] = useState<PreviewFile>({} as PreviewFile);
   const [locked, setLocked] = useState(true);
   const previewComponentRef = useRef(null);
@@ -76,8 +77,10 @@ export default function FilePreview(
         data: file,
         type: file.type,
       });
+      setPreviewFileKey(fileKey);
     } catch (error) {
-      console.log(`[FilePreview] Caugh error ${JSON.stringify(error as unknown as any)}`)
+      console.log(`[FilePreview] Caught error ${JSON.stringify(error)}`)
+      throw error;
     }
   }
 
@@ -114,6 +117,7 @@ export default function FilePreview(
     }
   }
   function closePreview() {
+    console.log('[FilePreview] Closing preview');
     setLocked(true);
     visControl('invisible');
   }
@@ -124,25 +128,25 @@ export default function FilePreview(
     }
     setLocked(!locked);
   }
-  function RenderComponentFactory(file: PreviewFile) {
-    if (file.name === fileData.name) {
+  function RenderComponentFactory() {
+    if (fileData.name === fileData.name) {
       console.log('[FilePreview] Rendering file and state file are the same');
-      console.log(`[FilePreview] Rendering request for file ${JSON.stringify(file)}`);
+      console.log(`[FilePreview] Rendering request for file ${JSON.stringify(fileData as Omit<PreviewFile, 'data'>)}`);
     }
-    console.log(`[FilePreview] Rendering file of type ${file.type}`);
-    if (!file || !file.data || !file.type) {
+    console.log(`[FilePreview] Rendering file of type ${fileData.type}`);
+    if (!fileData || !fileData.data || !fileData.type) {
       console.log('[FilePreview] Failed to render preview. No data');
       return undefined;
     }
-    if (file.type === MimeTypes.pdf) {
-      console.log(`[FilePreview] rendering pdf with name ${file.name}`);
-      return <PdfCanvas file={file} />;
+    if (fileData.type === MimeTypes.pdf) {
+      console.log(`[FilePreview] rendering pdf with name ${fileData.name}`);
+      return <PdfCanvas file={fileData} />;
     }
-    if (file.type === 'text/markdown') {
-      return <MarkdownFile ref={previewComponentRef} file={file} editLocked={locked} />
+    if (fileData.type === 'text/markdown') {
+      return <MarkdownFile ref={previewComponentRef} file={fileData} editLocked={locked} />
     }
     // Default try to render as text
-    return <TextFile ref={previewComponentRef} key={`${file.name}+${uuid()}`} className='w-full p-3' file={file}></TextFile>
+    return <TextFile ref={previewComponentRef} key={`${fileData.name}+${uuid()}`} className='w-full p-3' file={fileData}></TextFile>
   }
 
   return (
@@ -153,7 +157,7 @@ export default function FilePreview(
           onLock={toggleLock}
           editEnabled={locked} />
         <div id="preview-container" className="w-full">
-          {RenderComponentFactory(fileData)}
+          {RenderComponentFactory()}
         </div>
       </div> : <></>
   )
