@@ -8,6 +8,9 @@ import { NextRequest } from 'next/server';
 export class AuthMiddleware extends Middleware {
   middlewareName = 'Authenticator';
   logLevel = 'prod';
+  constructor() {
+    super('Authenticator');
+  }
   async execute(_request: NextRequest): Promise<MiddlewareResponse> {
     this.log('Starting')
     // Get session for request
