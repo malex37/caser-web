@@ -1,8 +1,4 @@
-'use client'
-import Link from "next/link";
-
 function LinkButton (props: { path: string, text: string, id?: string, state?: any }) {
-
   return(
     <div
       id={
@@ -10,7 +6,7 @@ function LinkButton (props: { path: string, text: string, id?: string, state?: a
           props.id :
           `link-button-${props.path.replace('/','-')}-${props.text}`}
     >
-        <Link href={'/'+props.path}>{props.text}</Link>
+        <a href={'/'+props.path}>{props.text}</a>
     </div>
   );
 }

@@ -25,11 +25,12 @@ export default function ToastMessageHandler() {
 
   const addMessage = (toast: ToastMessageEventPayload) => {
     const id = uuid();
+    const idTail = process.env.NODE_ENV === 'development' ? ' '+id : '';
     setMessages((messagesState) => {
       return {
         [`${id}`]: {
           type: toast.type,
-          message: toast.message + ' ' + id
+          message: toast.message + idTail,
         }, ...messagesState
       };
     });

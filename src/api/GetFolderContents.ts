@@ -35,7 +35,6 @@ function reshapeBucketFolder(bucketDescription: ListObjectsV2CommandOutput, pref
   });
   // remove undefined
   const filteredReshaped = (reshaped || []).filter(el => el !== undefined) as ReshapedFolder[];
-  console.log(`Reshaped folder is: ${JSON.stringify(filteredReshaped, null, 2)}`);
   return filteredReshaped;
 }
 

@@ -8,6 +8,9 @@ export type MiddlewareResponse = {
 export abstract class Middleware {
   middlewareName = '';
   logLevel = 'debug';
+  constructor(name: string) {
+    this.middlewareName = name;
+  }
   // For middleware that isn't using await it won't matter but we give the option for middleware to
   // use other async calls
   async execute(_request: NextRequest): Promise<MiddlewareResponse> {
@@ -17,9 +20,7 @@ export abstract class Middleware {
     console.log(`[${this.middlewareName}]:[${ new Date(Date.now())}] ${message ? message : ''}`);
   }
   name() {
-    if (this.logLevel !== 'debug') {
-      return;
-    }
-    this.log()
+    return this.middlewareName;
   }
+  processFailure() {};
 }
