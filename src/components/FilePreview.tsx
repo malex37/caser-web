@@ -8,11 +8,14 @@ import { FileManager } from "@storage/FileManager";
 import PdfCanvas from '@components/preview-widgets/PdfCanvas';
 import TextFile from "./preview-widgets/TextFile";
 import { PreviewFile } from "@models/app";
-import { MimeTypes } from "@models/MimeTypes";
 import MarkdownFile from "./preview-widgets/MarkdownFile";
 import { v4 as uuid } from 'uuid';
 import { Cog8ToothIcon } from "@heroicons/react/24/outline";
 import { ShowToast } from "@components/molecules/ToastMessageHandler";
+import { ApplicationMimeTypes } from "@models/ApplicationMimeTypes";
+import { TextMimeTypes } from "@models/TextMimeTypes";
+import { ImageMimeTypes } from "@models/ImageMimeTypes";
+import ImagePreview from "./preview-widgets/Image";
 
 
 function Controls({
@@ -138,12 +141,15 @@ export default function FilePreview(
       console.log('[FilePreview] Failed to render preview. No data');
       return undefined;
     }
-    if (fileData.type === MimeTypes.pdf) {
+    if (fileData.type === ApplicationMimeTypes.pdf) {
       console.log(`[FilePreview] rendering pdf with name ${fileData.name}`);
       return <PdfCanvas file={fileData} />;
     }
-    if (fileData.type === 'text/markdown') {
+    if (fileData.type === TextMimeTypes.markdown) {
       return <MarkdownFile ref={previewComponentRef} file={fileData} editLocked={locked} />
+    }
+    if (Object.values(ImageMimeTypes).includes(fileData.type)) {
+      return <ImagePreview  file={fileData.data}/>
     }
     // Default try to render as text
     return <TextFile ref={previewComponentRef} key={`${fileData.name}+${uuid()}`} className='w-full p-3' file={fileData}></TextFile>

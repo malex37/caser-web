@@ -25,8 +25,9 @@ export default function FileUpload({destinationFolder}: { destinationFolder: str
     }
     const file = inputElem.files[0];
     console.log(`File uploaded: ${inputElem.files ? inputElem.files[0].name : 'none'}`);
-    const fileData = Buffer.from(await file.arrayBuffer()).toString();
-    let uploadStatus = await UploadFile(destinationFolder, file.name, fileData, file.type, file.lastModified);
+    const fileBuffer = await file.arrayBuffer();
+    const fileData = Buffer.from(fileBuffer).toString('base64');
+    let uploadStatus = await UploadFile(destinationFolder, file.name, fileData.toString(), file.type, file.lastModified);
     if (!uploadStatus) {
       fetchInputElement().files = null;
       ShowToast({ type: 'error', message: 'File upload failed :('});
@@ -41,7 +42,12 @@ export default function FileUpload({destinationFolder}: { destinationFolder: str
     <div className="flex flex-row items-center gap-3">
       <div className="text-2xl">Files</div>
       <input type="file" id="inputFile" className="invisible w-0" onChange={handleUploadFile} />
-      <div className="h-full w-auto rounded-box hover:cursor-pointer" onClick={openFileUpload}><DocumentArrowUpIcon className="h-8 w-auto" /></div>
+      <div
+        className="h-full w-auto rounded-box hover:cursor-pointer"
+        onClick={openFileUpload}
+      >
+        <DocumentArrowUpIcon className="h-8 w-auto" />
+      </div>
     </div>
   );
 }

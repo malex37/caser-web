@@ -51,7 +51,7 @@ export class FileManager {
   }
   static async uploadFile(destinationFolder: string, name: string, file: File): Promise<'SUCCESS'> {
     try {
-      const fileBuffer = Buffer.from(await file.arrayBuffer()).toString();
+      const fileBuffer = Buffer.from(await file.arrayBuffer()).toString('base64');
       const uploadStatus = await UploadFile(destinationFolder, name, fileBuffer, file.type, file.lastModified);
       if (!uploadStatus) {
         console.error(`[FileManager] File upload failed, api response was not present`);

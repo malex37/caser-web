@@ -29,11 +29,13 @@ export default async function UploadFile(
       accountId: process.env.AWS_ACCOUNT_ID,
     }
   });
+
+  console.log(`[${UploadFile.name}] Uploading file with props: ${fileName} ${fileType}`)
+  // console.log(`[${UploadFile.name}] Stringified fileData ${uint8Filebuffer.byteLength}`);
   const putCommandInput: PutObjectCommandInput = {
     Bucket: process.env.BUCKET_NAME,
     Key: folderId+`/${fileName}`,
-    Body: Buffer.from(fileData),
-    ContentLength: fileData.length,
+    Body: Buffer.from(fileData, 'base64'),
     ContentType: fileType,
   };
   console.log(`[UploadFile] Uploading file named ${fileName} of type ${fileType} to folder ${folderId}`);
