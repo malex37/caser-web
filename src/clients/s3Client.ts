@@ -19,7 +19,7 @@ export async function getS3Client(sessionCookies: ReadonlyRequestCookies) {
         sessionToken: session.ST,
         accessKeyId: session.AKI,
         secretAccessKey: session.SKI,
-        accountId: process.env.AWS_ACCOUNT_ID
+        accountId: process.env.ACCOUNT_ID
       }
     });
   } catch (error) {

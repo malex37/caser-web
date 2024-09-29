@@ -26,7 +26,7 @@ export default async function CreateFolder(_currentState: unknown, formData: For
     accessKeyId: session.AKI,
     secretAccessKey: session.SKI,
     sessionToken: session.ST,
-    accountId: process.env.AWS_ACCOUNT_ID,
+    accountId: process.env.ACCOUNT_ID,
   }
   const newFolderId = uuid();
   // Create a folder in bucket

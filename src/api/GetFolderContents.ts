@@ -50,7 +50,7 @@ export default async function GetFolderContents(folderId: string): Promise<Resha
       sessionToken: session.ST,
       accessKeyId: session.AKI,
       secretAccessKey: session.SKI,
-      accountId: process.env.AWS_ACCOUNT_ID
+      accountId: process.env.ACCOUNT_ID
     }
   });
   const commandInput: ListObjectsV2CommandInput = {

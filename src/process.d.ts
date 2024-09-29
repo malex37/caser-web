@@ -6,7 +6,7 @@ declare namespace NodeJS {
     IDENTITY_POOL_ID: string;
     USER_POOL_ID: string;
     SERVICE_REGION: string;
-    AWS_ACCOUNT_ID: string;
+    ACCOUNT_ID: string;
     FOLDERS_TABLE: string;
     BUCKET_ARN: string;
     BUCKET_NAME: string;

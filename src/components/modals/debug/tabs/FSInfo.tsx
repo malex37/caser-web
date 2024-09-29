@@ -25,13 +25,14 @@ export default function FSInfo() {
   }, []);
 
   return (
-    <Tab title="File system">
-      <div>
-        <div className="hover:cursor-pointer" onClick={getFsFiles}>
-          <ArrowPathIcon className="w-24"/>
-        </div>
-        {JSON.stringify(fsFiles, null, 2)}
+    <>
+      <input type="radio" name="file-system" role="tab" className="tab" aria-label="Files" defaultChecked={true}/>
+      <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
+      <div className="hover:cursor-pointer" onClick={getFsFiles}>
+        <ArrowPathIcon className="w-24" />
       </div>
-    </Tab>
+      {JSON.stringify(fsFiles, null, 2)}
+      </div>
+    </>
   );
 }

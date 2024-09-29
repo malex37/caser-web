@@ -32,10 +32,10 @@ const Debug = (props: DebugProps): JSX.Element => {
     <dialog id={props.id} className='modal w-full h-full'>
       <div className='modal-box max-w-[90%] gap-2 h-full w-full'>
         <TabContainer>
-          <FSInfo />
+         <FSInfo />
           <ToastMessage />
         </TabContainer>
-      </div>
+        </div>
     </dialog>
   );
 }

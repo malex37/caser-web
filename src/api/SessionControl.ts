@@ -123,7 +123,7 @@ async function assumeRole(idToken: string) {
   console.log(`Using login map: ${JSON.stringify(loginMap)}`)
   // get identity ID
   const idInput: GetIdCommandInput = {
-    AccountId: process.env.AWS_ACCOUNT_ID,
+    AccountId: process.env.ACCOUNT_ID,
     IdentityPoolId: process.env.IDENTITY_POOL_ID,
     Logins: loginMap
   };
