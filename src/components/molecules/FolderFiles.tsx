@@ -25,7 +25,7 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
   const [previewFileKey, setPreviewFileKey] = useState('');
   const checkEventName = 'set-check';
   const [folderFiles, setFolderFiles] = useState<ReshapedFolder[]>(bucketContents);
-  const [previewStatus, setPreviewStatus] = useState<'visible'|'invisible'>('invisible');
+  const [previewStatus, setPreviewStatus] = useState<'visible' | 'invisible'>('invisible');
   const [allChecked, setAllChecked] = useState(false);
 
   const updateFileList = async (event: CustomEvent<ReshapedFolder>) => {
@@ -130,7 +130,7 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
     return el;
   }
   return (
-    <div className="overflow-auto flex flex-row flex-nowrap">
+    <div className="overflow-auto flex">
       <div className='w-full'>
         <table className="table">
           <thead>
@@ -160,9 +160,9 @@ export default function FolderFiles({ bucketContents, folderId }: { bucketConten
         </table>
       </div>
       <div className='divider-vertical'></div>
-        {
-          <FilePreview currentFolder={folderId} fileKey={previewFileKey} visibility={previewStatus} visControl={previewVisibility}/>
-        }
+      {
+        <FilePreview currentFolder={folderId} fileKey={previewFileKey} visibility={previewStatus} visControl={previewVisibility} />
+      }
     </div>
   );
 }

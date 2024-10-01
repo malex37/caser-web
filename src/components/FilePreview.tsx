@@ -101,7 +101,7 @@ export default function FilePreview(
       const text = previewComponentRef.current.editedText();
       // @ts-ignore next-line
       if (!previewComponentRef.current.wasEdited()) {
-        ShowToast({ type: 'info', message: 'No changes made to file'});
+        ShowToast({ type: 'info', message: 'No changes made to file' });
         return;
       }
       // @ts-ignore next-line
@@ -113,7 +113,7 @@ export default function FilePreview(
         await FileManager.uploadFile(currentFolder, fileInfo.name, fileBlob);
         ShowToast({ type: 'success', message: 'File Saved!' });
       } catch (error) {
-        ShowToast({ type: 'error', message: `Suffered an error ${JSON.stringify((error as unknown as any), null, 2)}`})
+        ShowToast({ type: 'error', message: `Suffered an error ${JSON.stringify((error as unknown as any), null, 2)}` })
       }
     } catch (error) {
       console.log('Error saving file', error);
@@ -149,7 +149,7 @@ export default function FilePreview(
       return <MarkdownFile ref={previewComponentRef} file={fileData} editLocked={locked} />
     }
     if (Object.values(ImageMimeTypes).includes(fileData.type)) {
-      return <ImagePreview  file={fileData.data}/>
+      return <ImagePreview file={fileData.data} />
     }
     // Default try to render as text
     return <TextFile ref={previewComponentRef} key={`${fileData.name}+${uuid()}`} className='w-full p-3' file={fileData}></TextFile>
@@ -157,7 +157,7 @@ export default function FilePreview(
 
   return (
     visibility === 'visible' ?
-      <div className="w-full h-full flex flex-col gap-3">
+      <div className="w-full h-full flex-col flex gap-3">
         <Controls
           onClose={closePreview}
           onLock={toggleLock}
