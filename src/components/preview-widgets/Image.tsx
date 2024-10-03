@@ -135,13 +135,17 @@ export default function ImagePreview({ file }: { file: File }) {
       log('No canvas to attach event');
       return;
     }
-    canvasComponent.current.addEventListener("mousemove", (e) => mouseMove(event));
+    canvasComponent.current.addEventListener("mousemove", (e) => mouseMove(e));
   };
 
   const mouseUp = (event: ME<HTMLCanvasElement, MouseEvent>) => {
     const { canvas } = getCanvas();
     log('Mouse up');
-    canvas.removeEventListener("mousemove", () => mouseMove(event));
+    if (!canvasComponent.current) {
+      log('No canvas to attach event');
+      return;
+    }
+    canvasComponent.current.removeEventListener("mousemove", () => mouseMove(event));
   }
 
   // Needs to be callbacked so it remains across re-renders and removelistener cand identify
